@@ -1,2 +1,2 @@
-public class SJFScheduler {
+public class SJFScheduler extends Scheduler {
 }

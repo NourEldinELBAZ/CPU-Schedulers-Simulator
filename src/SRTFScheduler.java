@@ -1,2 +1,2 @@
-public class SRTFScheduler {
+public class SRTFScheduler extends Scheduler {
 }

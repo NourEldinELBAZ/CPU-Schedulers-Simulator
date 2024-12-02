@@ -1,2 +1,2 @@
-public class FCAIScheduler {
+public class FCAIScheduler extends Scheduler {
 }

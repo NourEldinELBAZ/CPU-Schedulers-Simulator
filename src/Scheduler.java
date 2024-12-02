@@ -1,2 +1,3 @@
-public class Scheduler {
+// abstract class
+public abstract class Scheduler {
 }
