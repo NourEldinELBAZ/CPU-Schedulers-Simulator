@@ -103,8 +103,8 @@ public class Process {
         return FCAI_Factor;
     }
 
-    public void setFCAI_Factor(int FcaI_Factor) {
-        this.FCAI_Factor = FCAI_Factor;
+    public void setFCAI_Factor(int fcaiFactor) {
+        this.FCAI_Factor = fcaiFactor;
     }
 
     public int getQuantum() {return quantum;}
@@ -120,6 +120,7 @@ public class Process {
                 ", remainingTime=" + remainingTime +
                 ", waitingTime=" + waitingTime +
                 ", turnaroundTime=" + turnaroundTime +
+                ", FCAIFactor=" + FCAI_Factor +
                 ", color='" + color + '\'' +
                 '}';
     }
