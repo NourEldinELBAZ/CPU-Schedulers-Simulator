@@ -2,8 +2,7 @@
 //   need to handle this case, my idea is to iterate unit by unit after the 40 % and check if there's
 //   any process with less fcai factor.
 
-// - I think there's some problems with calculating the time i solved it in the past but i accidentally lost the code
-//   so I need to recheck the code
+// - (solved) I think there's some problems with calculating the time i solved it in the past but i accidentally lost the code
 
 // - need to calculate turnaround and waiting times
 
@@ -57,6 +56,7 @@ public class FCAIScheduler {
         List<String> executionOrder = new ArrayList<>();
         Queue<Process> readyQueue = new LinkedList<>();
 
+
         //we are adding the ready processes to the ready queue so we could schedule next
         while (!processes.isEmpty() || !readyQueue.isEmpty()) {
             Iterator<Process> iterator = processes.iterator();
@@ -97,8 +97,9 @@ public class FCAIScheduler {
             }//preemptive
             else {
                 currentProcess.setRemainingTime(currentProcess.getRemainingTime() - executionTime);
-//                currentTime += executionTime;
+                currentTime += executionTime;
 
+                readyQueue.add(currentProcess);
                 list = new ArrayList<>(readyQueue);
                 list.sort((p1, p2) -> calculateFCAIFactor(p2, V1, V2) - calculateFCAIFactor(p1, V1, V2));
                 readyQueue.clear();
@@ -106,21 +107,27 @@ public class FCAIScheduler {
 
                 if(currentProcess == readyQueue.peek()){
                     if(currentProcess.getRemainingTime() >=  currentProcess.getQuantum() - executionTime){
-                        executionOrder.add(currentProcess.getName() + " [" + currentTime + "-" + (currentTime + currentProcess.getQuantum()) + "]");
-                        currentTime += currentProcess.getQuantum();
-                        currentProcess.setRemainingTime(currentProcess.getRemainingTime() - currentProcess.getQuantum());
+                        executionOrder.add(currentProcess.getName() + " [" + (currentTime - executionTime) + "-" + (currentTime + currentProcess.getQuantum() - executionTime) + "]");
+                        currentTime += currentProcess.getQuantum() - executionTime;
+                        currentProcess.setRemainingTime(currentProcess.getRemainingTime() - currentProcess.getQuantum() - executionTime);
                         currentProcess.setQuantum(currentProcess.getQuantum() + 2);
+
+                        readyQueue.poll();
+                        list = new ArrayList<>(readyQueue);
+                        list.sort((p1, p2) -> calculateFCAIFactor(p2, V1, V2) - calculateFCAIFactor(p1, V1, V2));
+                        readyQueue.clear();
+                        readyQueue.addAll(list);
+                        readyQueue.add(currentProcess);
                     }
                     else{
-                        executionOrder.add(currentProcess.getName() + " [" + currentTime + "-" + (currentTime + executionTime + currentProcess.getRemainingTime()) + "]");
-                        currentTime += currentProcess.getRemainingTime() + executionTime;
+                        executionOrder.add(currentProcess.getName() + " [" + (currentTime - executionTime) + "-" + (currentTime + currentProcess.getRemainingTime()) + "]");
+                        currentTime += currentProcess.getRemainingTime();
                         currentProcess.setRemainingTime(0);
+                        readyQueue.poll();
                     }
-                    readyQueue.poll();
                 }
                 else{
-                    executionOrder.add(currentProcess.getName() + " [" + currentTime + "-" + (currentTime + executionTime) + "]");
-                    currentTime += executionTime;
+                    executionOrder.add(currentProcess.getName() + " [" + (currentTime - executionTime)  + "-" + (currentTime) + "]");
                     currentProcess.setQuantum(currentProcess.getQuantum() * 2 - executionTime);
                 }
             }
